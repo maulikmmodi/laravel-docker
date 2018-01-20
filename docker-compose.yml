@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  mysql:
+    build: ./docker/mysql
+    ports:
+      - "33060:3306"
+  php:
+    build:
+      context: ./
+      dockerfile: ./docker/php/Dockerfile
+    depends_on:
+      - mysql
+    volumes:
+      - ./:/var/www/laravel
+  nginx:
+    build:
+      context: ./
+      dockerfile: ./docker/nginx/Dockerfile
+    depends_on:
+      - php
+    links:
+      - php
+    volumes:
+      - ./:/var/www/laravel
+    ports:
+      - "8085:80"
+volumes:
+  dbdata:
